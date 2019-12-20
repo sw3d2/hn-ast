@@ -1,12 +1,14 @@
 {
   "name": "hn-ast",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "bin": "sh/cli",
   "devDependencies": {
     "@types/node": "12.12.17",
-    "htmlparser2": "4.0.0",
-    "domutils": "2.0.0",
     "typescript": "3.7.3"
+  },
+  "dependencies": {
+    "htmlparser2": "4.0.0",
+    "domutils": "2.0.0"
   },
   "scripts": {
     "prepare": "tsc"
