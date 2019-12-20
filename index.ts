@@ -156,11 +156,20 @@ function nestComments(comments: Comment[]) {
 }
 
 function makeVastNode(root: Comment): VastNode {
+  let textNode: VastNode = {
+    name: 'text',
+    type: 'content',
+    size: root.text.length,
+  };
+
+  let nodes: VastNode[] = [textNode];
+  if (root.children)
+    nodes.push(...root.children.map(makeVastNode));
+
   return {
     name: '#' + root.id,
     type: 'comment',
-    size: root.text.length,
-    children: root.children?.map(makeVastNode),
+    children: nodes,
   };
 }
 
