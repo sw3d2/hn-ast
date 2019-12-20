@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "outDir": "tsbin",
+    "target": "ES2019",
+    "lib": [
+      "ES2019"
+    ],
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "alwaysStrict": true,
+    "strictNullChecks": true,
+    "removeComments": false,
+    "noImplicitAny": false
+  }
+}

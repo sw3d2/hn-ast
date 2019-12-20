@@ -1,0 +1,19 @@
+Usage: sh/cli input [tmpdir] [output]
+
+  input   - The input html file path or a URL.
+  tmpdir  - A temp dir where the script will store temp files. Defaults to the current dir.
+  output  - A file path where the json ast should be written. Defaults to stdout.
+
+Examples:
+
+  $ sh/cli /tmp/foo/bar/index.html /tmp /tmp/foo/bar/vast.json
+
+    Reads the downloaded html from file and writes the output to vast.json.
+
+  $ sh/cli hn:21817034 /tmp /tmp/hn/21817034/vast.json
+
+    Downloads the html first and then generates the AST.
+
+  $ sh/cli https://news.ycombinator.com/item?id=21817034 /tmp
+
+    Same as above, but with an explicit URL. The output is printed to stdout.
