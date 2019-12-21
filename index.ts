@@ -134,17 +134,28 @@ function getNodeText(node: HtmlNode | null): string | null {
 
 function parseComment(commNode: HtmlElement): Comment {
   let commId = commNode.attribs['id'];
-  let [textNode] = findElements([commNode], HN_COMMENT_TEXT_CLASS);
-  let [indentNode] = findElements([commNode], HN_INDENT_NODE_CLASS);
-  let [imgNode] = findElements([indentNode], 'img');
-  let pNodes = domutils.find(
-    node => domutils.isText(node) ||
-      domutils.isTag(node) &&
-      node.tagName == 'p',
-    textNode.children, false, Infinity);
-  let text = pNodes.map(getNodeText)
-    .filter(s => s && s.length > 0) as string[];
-  let indent = +imgNode.attribs['width'];
+  let indent = 0;
+  let text: string[] = [];
+
+  try {
+    let [textNode] = findElements([commNode], HN_COMMENT_TEXT_CLASS);
+    let [indentNode] = findElements([commNode], HN_INDENT_NODE_CLASS);
+    let [imgNode] = findElements([indentNode], 'img');
+
+    indent = +imgNode.attribs['width'];
+
+    let pNodes = domutils.find(
+      node => domutils.isText(node) ||
+        domutils.isTag(node) &&
+        node.tagName == 'p',
+      textNode.children, false, Infinity);
+
+    text = pNodes.map(getNodeText)
+      .filter(s => s && s.length > 0) as string[];
+  } catch (err) {
+    console.warn('Failed to parse comment:', commId, err.message);
+  }
+
   return {
     id: commId,
     indent,
