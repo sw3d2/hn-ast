@@ -1,6 +1,6 @@
 {
   "name": "hn-ast",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "bin": "sh/cli",
   "devDependencies": {
     "@types/node": "12.12.17",

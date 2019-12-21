@@ -14,9 +14,9 @@ const HN_COMMENT_TEXT_CLASS = '.commtext';
 const HN_INDENT_NODE_CLASS = '.ind';
 
 const COLORS = {
-  'content': '#fc0',
-  'comment': '#ccc',
-  'topic': '#c0f',
+  'content': '#f00',
+  'comment': '#0c0',
+  'topic': '#00f',
 };
 
 interface VastFile {
