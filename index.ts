@@ -121,7 +121,7 @@ function matchesSelector(el: HtmlElement, sel: string) {
   return true;
 }
 
-function getNodeText(node: HtmlNode | null) {
+function getNodeText(node: HtmlNode | null): string | null {
   if (!node)
     return null;
   if (domutils.isText(node))
@@ -141,7 +141,8 @@ function parseComment(commNode: HtmlElement): Comment {
       domutils.isTag(node) &&
       node.tagName == 'p',
     textNode.children, false, Infinity);
-  let text = pNodes.map(getNodeText);
+  let text = pNodes.map(getNodeText)
+    .filter(s => s && s.length > 0) as string[];
   let indent = +imgNode.attribs['width'];
   return {
     id: commId,
