@@ -15,7 +15,7 @@ const HN_INDENT_NODE_CLASS = '.ind';
 
 const COLORS = {
   'paragraph': '#f00',
-  'content': '#c00',
+  'content': '#00f',
   'comment': '#0c0',
   'topic': '#00f',
 };
@@ -97,6 +97,7 @@ function generateAST(roots: HtmlNode[]): VastNode {
   let croot = nestComments(parsed);
   return {
     ref: inputPath,
+    name: inputPath,
     type: 'topic',
     children: makeVastNode(croot).children,
   };
