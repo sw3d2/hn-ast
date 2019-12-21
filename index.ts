@@ -14,7 +14,8 @@ const HN_COMMENT_TEXT_CLASS = '.commtext';
 const HN_INDENT_NODE_CLASS = '.ind';
 
 const COLORS = {
-  'content': '#f00',
+  'paragraph': '#f00',
+  'content': '#c00',
   'comment': '#0c0',
   'topic': '#00f',
 };
@@ -29,7 +30,8 @@ interface VastFile {
 }
 
 interface VastNode {
-  name: string;
+  ref?: string;
+  name?: string;
   type: keyof typeof COLORS;
   size?: number;
   children?: VastNode[];
@@ -37,7 +39,7 @@ interface VastNode {
 
 interface Comment {
   id: string;
-  text: string;
+  text: string[];
   indent: number;
   children?: Comment[];
 }
@@ -51,6 +53,7 @@ if (!inputPath) {
   process.exit(0);
 }
 
+inputPath = resolveFullUrl(inputPath);
 let html = downloadInputHtml(inputPath);
 let tree = parseHtml(html);
 let vast = generateAST(tree);
@@ -61,6 +64,12 @@ if (outputPath)
   fs.writeFileSync(outputPath, json, 'utf8');
 else
   console.log(json);
+
+function resolveFullUrl(uri: string) {
+  if (uri.startsWith(HN_SCHEME))
+    uri = HN_URL_BASE + uri.replace(HN_SCHEME, '');
+  return uri;
+}
 
 function downloadInputHtml(uri: string) {
   if (uri.startsWith(HN_SCHEME))
@@ -87,7 +96,7 @@ function generateAST(roots: HtmlNode[]): VastNode {
   let parsed = comments.map(parseComment);
   let croot = nestComments(parsed);
   return {
-    name: inputPath,
+    ref: inputPath,
     type: 'topic',
     children: makeVastNode(croot).children,
   };
@@ -132,7 +141,7 @@ function parseComment(commNode: HtmlElement): Comment {
       domutils.isTag(node) &&
       node.tagName == 'p',
     textNode.children, false, Infinity);
-  let text = pNodes.map(getNodeText).join('\n');
+  let text = pNodes.map(getNodeText);
   let indent = +imgNode.attribs['width'];
   return {
     id: commId,
@@ -142,7 +151,7 @@ function parseComment(commNode: HtmlElement): Comment {
 }
 
 function nestComments(comments: Comment[]) {
-  let croot: Comment = { id: '', text: '', indent: -1, children: [] };
+  let croot: Comment = { id: '', text: [], indent: -1, children: [] };
   let chain: Comment[] = [croot];
 
   for (let index = 0; index < comments.length; index++) {
@@ -166,7 +175,13 @@ function makeVastNode(root: Comment): VastNode {
   let textNode: VastNode = {
     name: 'text',
     type: 'content',
-    size: root.text.length,
+    children: root.text.map(p => {
+      return {
+        name: 'p',
+        type: 'paragraph',
+        size: p.length,
+      };
+    })
   };
 
   let nodes: VastNode[] = [textNode];
@@ -174,7 +189,8 @@ function makeVastNode(root: Comment): VastNode {
     nodes.push(...root.children.map(makeVastNode));
 
   return {
-    name: '#' + root.id,
+    ref: inputPath + '#' + root.id,
+    name: root.id,
     type: 'comment',
     children: nodes,
   };
