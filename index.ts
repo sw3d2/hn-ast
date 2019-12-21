@@ -13,17 +13,24 @@ const HN_COMMENT_NODE_CLASS = '.comtr';
 const HN_COMMENT_TEXT_CLASS = '.commtext';
 const HN_INDENT_NODE_CLASS = '.ind';
 
+const COLORS = {
+  'content': '#fc0',
+  'comment': '#ccc',
+  'topic': '#c0f',
+};
+
 interface VastFile {
   format: 'vast';
   version: string;
   source: string;
+  colors: typeof COLORS;
   timestamp: string;
   vast: VastNode;
 }
 
 interface VastNode {
   name: string;
-  type: string;
+  type: keyof typeof COLORS;
   size?: number;
   children?: VastNode[];
 }
@@ -81,7 +88,7 @@ function generateAST(roots: HtmlNode[]): VastNode {
   let croot = nestComments(parsed);
   return {
     name: inputPath,
-    type: 'root',
+    type: 'topic',
     children: makeVastNode(croot).children,
   };
 }
@@ -178,6 +185,7 @@ function generateVastFile(root: VastNode): VastFile {
     format: 'vast',
     version: '1.0.0',
     source: inputPath,
+    colors: COLORS,
     timestamp: new Date().toJSON(),
     vast: root,
   };
